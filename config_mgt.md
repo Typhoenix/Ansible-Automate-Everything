@@ -19,8 +19,12 @@ In the diagram below the Virtual Private Network (VPC) is divided into two subne
 ### Install and configure Ansible on VM
 - You can update the name tag on your Jenkins instance to *Jenkins-Ansible* if you like. As we'll also use this server to run ansible playbooks.
 - Create a new repo on your GitHub and name it whatever is suitable (mine is automate-everything).
+- Update Name tag on your Jenkins EC2 Instance to Jenkins-Ansible. We will use this server to run playbooks.
+
+In your GitHub account create a new repository and name it ansible-config-mgt.
+  ![](assets/1.png)
 - Install Ansible
-  
+
 ```
 sudo apt update
 
