@@ -114,6 +114,9 @@ Identity added: phoenix.pem (phoenix.pem)
 $ ssh-add -l
 2048 SHA256:a8AGbwDAD7tfXY9FO2wJgqscToWCBNUkQC1xSW310w4 phoenix.pem (RSA)
 ```
+- Persist the key on the jenkins-ansible server by running:
+  
+`ssh-add -l`
 
 Now, ssh into your Jenkins-Ansible server using ssh-agent
 
@@ -137,7 +140,6 @@ Update your inventory/dev.yml file with this snippet of code:
 [lb]
 <Load-Balancer-Private-IP-Address> ansible_ssh_user='ubuntu'
 ```
-
 ### Create a Playbook
 It is time to start giving Ansible the instructions on what you needs to be performed on all servers listed in inventory/dev.
 
@@ -169,4 +171,24 @@ Update your playbooks/common.yml file with following code:
 ```
 
 This playbook is divided into two parts, each of them is intended to perform the same task: install wireshark utility (or make sure it is updated to the latest version) on your Centos8 and Ubuntu servers. It uses root user to perform this task and respective package manager: yum for RHEL 8 and apt for Ubuntu.
+### Update GIT with the latest code
+
+Now that we have a separate branch, we'll need to raise a Pull Request (PR), so as to get your branch peer merged to the master branch.
+
+use git commands to add, commit and push your branch to GitHub.
+
+```
+git status
+
+git add <selected files>
+
+git commit -m "commit message"
+```
+- Create a Pull request (PR)
+Wear a hat of another developer for a second, and act as a reviewer. If the reviewer is happy with your new feature development, merge the code to the master branch.
+![](assets/12.png)
+![](assets/13.png)
+![](assets/14.png)
+![](assets/15.png)
+
 
