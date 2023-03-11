@@ -14,15 +14,16 @@ A Jump Server (also referred to as Bastion Host) is an intermediary server throu
 
 In the diagram below the Virtual Private Network (VPC) is divided into two subnets - Public subnet has public IP addresses and Private subnet is only reachable by private IP addresses.
 
-![](https://github.com/Arafly/automate-everything/blob/master/assets/bastion.png)
-
+![](assets/2.png)
 ### Install and configure Ansible on VM
 - You can update the name tag on your Jenkins instance to *Jenkins-Ansible* if you like. As we'll also use this server to run ansible playbooks.
-- Create a new repo on your GitHub and name it whatever is suitable (mine is automate-everything).
+- Create a new repo on your GitHub and name it whatever is suitable (mine is ansible).
 - Update Name tag on your Jenkins EC2 Instance to Jenkins-Ansible. We will use this server to run playbooks.
 
 In your GitHub account create a new repository and name it ansible-config-mgt.
+
   ![](assets/1.png)
+
 - Install Ansible
 
 ```
@@ -39,45 +40,49 @@ Output:
 
 ansible 2.9.6
   config file = /etc/ansible/ansible.cfg
-  configured module search path = ['/home/araflyayinde/.ansible/plugins/modules', '
-/usr/share/ansible/plugins/modules']
+  configured module search path = ['/home/ubuntu/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
   ansible python module location = /usr/lib/python3/dist-packages/ansible
   executable location = /usr/bin/ansible
+  python version = 3.8.10 (default, Nov 14 2022, 12:59:47) [GCC 9.4.0]
+
 ```
 
 ### Configure Jenkins build job to save your repository content every time you change it. 
 
 - Create a new Freestyle project "ansible" in Jenkins and point it to your repository.
-
-> You can first place in your project name and clone the *tooling* project. Like this:
-
-![](https://github.com/Arafly/automate-everything/blob/master/assets/jenkins_clone.PNG)
-
-![](https://github.com/Arafly/automate-everything/blob/master/assets/third_build.PNG)
+  
+![](assets/3.png)
+![](assets/5.png)
+![](assets/6.png)
 
 - Configure Webhook in GitHub and set webhook to trigger ansible build.
-- Configure a Post-build job to save all (**) files.
+  ![](assets/4.png)
 
-*image third_build
+- Configure a Post-build job to save all (**) files.
+![](assets/7.png)
+
+- Manually trigger build to test configuration
+![](assets/8.png)
 
 - Test your setup by making some change in README.MD file in master branch and make sure that builds starts automatically and Jenkins saves the files (build artifacts) in following folder:
+![](assets/9.png)
   
 `ls /var/lib/jenkins/jobs/ansible/builds/<build_number>/archive/`
 
 ```
-$ ls /var/lib/jenkins/jobs/ansible/builds/
+$ sudo ls /var/lib/jenkins/jobs/Ansible/builds/
 1  2  3  legacyIds  permalinks
 
-$ ls /var/lib/jenkins/jobs/ansible/builds/3
+~$ sudo ls /var/lib/jenkins/jobs/Ansible/builds/2
 archive  build.xml  changelog.xml  log  polling.log
 
-$ ls /var/lib/jenkins/jobs/ansible/builds/3/archive/
-README.md  assets  config_mgt.md
+$  sudo ls /var/lib/jenkins/jobs/Ansible/builds/2/archive/
+README.md
 ```
 
 Now our setup will look like this:
 
-![](https://github.com/Arafly/automate-everything/blob/master/assets/jenkins_ansible.png)
+![](assets/10.png)
 
 ## Ansible Development
 - In your  GitHub repository, create a new branch that will be used for development of a new feature (mine is ansible_integration)
@@ -85,11 +90,34 @@ Now our setup will look like this:
 - Checkout the newly created feature branch to your local machine to start building your code and directory structure
 - Create a directory and name it *playbooks* - it will be used to store all your playbook files. Also Within the playbooks folder, create your first playbook, and name it *common.yml*
 - Create a directory and name it *inventory* - it will be used to keep your hosts organised. Within the inventory folder, create an inventory file (use .ini format) for each environment (Development, Staging Testing and Production) dev, staging, uat, and prod respectively.
+>Your file structure should look like this:
+![](assets/11.png)
 
 > Establish an ssh connection to each ip addresses grouped in the inventory file
 
 ### Set up an Ansible Inventory
 An Ansible inventory file defines the hosts and groups of hosts upon which commands, modules, and tasks in a playbook operate. It is important to have a way to organize our hosts in such an Inventory.
+- using SSH-Agent to upload our ssh public key to the jenkins-ansible server
+
+```
+eval `ssh-agent -s`
+ssh-add <path-to-private-key>```
+```
+Confirm the key has been added with the command below, you should see the name of your key
+
+`ssh-add -l`
+
+```
+Output:
+$ ssh-add phoenix.pem
+Identity added: phoenix.pem (phoenix.pem)
+$ ssh-add -l
+2048 SHA256:a8AGbwDAD7tfXY9FO2wJgqscToWCBNUkQC1xSW310w4 phoenix.pem (RSA)
+```
+
+Now, ssh into your Jenkins-Ansible server using ssh-agent
+
+`ssh -A ubuntu@public-ip`
 
 Below inventory structure in the inventory/dev file to start configuring your development servers. *Ensure to replace the IP addresses according to your own setup*.
 
