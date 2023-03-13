@@ -147,8 +147,8 @@ Update your playbooks/common.yml file with following code:
 
 ```
 ---
-- name: update web, nfs and db servers
-  hosts: webservers, nfs, db
+- name: update webservers and nfs 
+  hosts: webservers, nfs
   remote_user: ec2-user
   become: yes
   become_user: root
@@ -158,8 +158,8 @@ Update your playbooks/common.yml file with following code:
       name: wireshark
       state: latest
 
-- name: update LB server
-  hosts: lb
+- name: update LB server, db
+  hosts: lb, db
   remote_user: ubuntu
   become: yes
   become_user: root
@@ -299,3 +299,22 @@ Output
     "ping": "pong"
 }
 ```
+## Run first Ansible test
+Now, it's time to execute ansible-playbook command and verify if your playbook actually works:
+
+`ansible-playbook -i /var/lib/jenkins/jobs/ansible/builds/<build-number>/archive/inventory/dev.yml /var/lib/jenkins/jobs/ansible/builds/<build-number>/archive/playbooks/common.yml`
+
+![](assets/17.png)
+
+You can go to each of the servers and check if wireshark has been installed by running `which wireshark` or `wireshark --version`
+
+![](assets/18.png)
+
+Your updated with Ansible architecture now looks like this:
+
+![](assets/19.png)
+
+Congratulations
+You have just automated your routine tasks by implementing your first Ansible project! 
+
+![](assets/20.png)
