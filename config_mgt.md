@@ -195,3 +195,107 @@ Head back on your terminal, checkout from the feature branch into the master, an
 Once your code changes appear in master branch - Jenkins will do its job and save all the files (build artifacts) to` /var/lib/jenkins/jobs/ansible/builds/<build_number>/archive/` directory on Jenkins-Ansible server.
 
 
+Now run the follwing command to list out your inventory:
+
+`$ ansible-inventory -i /var/lib/jenkins/jobs/ansible/builds/build_no/archive/inventory/dev.yml --list`
+
+``
+
+```
+Output
+{
+    "_meta": {
+        "hostvars": {
+            "172.31.32.239": {
+                "ansible_ssh_user": "ec2-user"
+            },
+            "172.31.33.146": {
+                "ansible_ssh_user": "ubuntu"
+            },
+            "172.31.35.194": {
+                "ansible_ssh_user": "ec2-user"
+            },
+            "172.31.38.189": {
+                "ansible_ssh_user": "ec2-user"
+            },
+            "172.31.45.210": {
+                "ansible_ssh_user": "ubuntu"
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "db",
+            "lb",
+            "nfs",
+            "ungrouped",
+            "webservers"
+        ]
+    },
+    "db": {
+        "hosts": [
+            "172.31.33.146"
+        ]
+    },
+    "lb": {
+        "hosts": [
+            "172.31.45.210"
+        ]
+    },
+    "nfs": {
+        "hosts": [
+            "172.31.35.194"
+        ]
+    },
+    "webservers": {
+        "hosts": [
+            "172.31.32.239",
+            "172.31.38.189"
+        ]
+    }
+}
+```
+- Run a ping to test connection to all our remote hosts
+
+`$ ansible all -i /var/lib/jenkins/jobs/ansible/builds/build_no/archive/inventory/dev.yml -m ping`
+ 
+This would execute the ping module on all hosts listed in your custom inventory file.
+
+```
+Output
+172.31.38.189 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/libexec/platform-python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+172.31.32.239 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/libexec/platform-python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+172.31.35.194 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/libexec/platform-python"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+172.31.33.146 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+172.31.45.210 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+```
