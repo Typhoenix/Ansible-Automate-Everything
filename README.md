@@ -2,4 +2,4 @@
 
 > Find details of the implementation in the file *config_mgt.md*.  
  
-    
+     
