@@ -27,7 +27,7 @@ In your GitHub account create a new repository and name it ansible-config-mgt.
 - Install Ansible
 
 ```
-sudo apt update
+sudo apt update 
 
 sudo apt install ansible
 ```
