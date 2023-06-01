@@ -1,5 +1,5 @@
 # Ansible Configuration Management - Automate Project 7 to 10 
-
+ 
 In Projects 7 to 10 we've had to perform a lot of manual operations - setting up virtual servers, installation and configuration of required software, deployment of  web application.
 
 We're about to automate the routine tasks with a Configuration Management Tool called *Ansible*
